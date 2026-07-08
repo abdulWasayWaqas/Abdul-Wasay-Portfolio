@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent: #34d399;
+  --accent-glow: #10b981;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+body {
+  background-color: #050607;
+  color: #e7ece9;
+  overflow-x: hidden;
+}
+
+/* Subtle grain + radial vignette layered under content */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 600px at 78% -10%, rgba(16, 185, 129, 0.14), transparent 60%),
+    radial-gradient(700px 500px at 8% 100%, rgba(52, 211, 153, 0.08), transparent 55%);
+}
+
+::selection {
+  background: rgba(52, 211, 153, 0.28);
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #060809;
+}
+::-webkit-scrollbar-thumb {
+  background: #16221d;
+  border-radius: 999px;
+  border: 2px solid #060809;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1f3a30;
+}
+
+@layer components {
+  .section-pad {
+    @apply mx-auto w-full max-w-content px-6 md:px-10;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-accent/80;
+  }
+
+  .card {
+    @apply relative rounded-2xl border border-line bg-panel/60 backdrop-blur-sm transition-all duration-300;
+  }
+  .card:hover {
+    border-color: rgba(52, 211, 153, 0.35);
+    box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.08), 0 24px 60px -30px rgba(16, 185, 129, 0.5);
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full border border-line bg-white/[0.02] px-3 py-1 text-xs text-white/70 transition-colors;
+  }
+  .chip:hover {
+    @apply border-accent/40 text-accent;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-transform duration-200;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -18px rgba(52, 211, 153, 0.8);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-line px-6 py-3 text-sm font-semibold text-white/85 transition-colors duration-200 hover:border-accent/50 hover:text-accent;
+  }
+
+  .gradient-text {
+    background: linear-gradient(100deg, #ffffff 10%, #6ee7b7 55%, #34d399 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* React Bits — Shiny Text */
+.shiny-text {
+  color: rgba(255, 255, 255, 0.55);
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.55) 40%,
+    #6ee7b7 50%,
+    rgba(255, 255, 255, 0.55) 60%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  animation: shine 4s linear infinite;
+}
+.shiny-text--disabled {
+  animation: none;
+}
+
+/* React Bits — Animated Gradient Text */
+.animated-gradient-text {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 6s linear infinite;
+  display: inline-block;
+}
+
+/* Tech-stack logo marquee — seamless two-row counter-scroll */
+.logo-marquee {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.logo-row {
+  display: flex;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 7%,
+    #000 93%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 7%,
+    #000 93%,
+    transparent
+  );
+}
+.logo-track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  gap: 0.9rem;
+  animation: logo-scroll var(--dur, 50s) linear infinite;
+}
+.logo-track--reverse {
+  animation-direction: reverse;
+}
+/* pause the whole marquee when hovering either row */
+.logo-marquee:hover .logo-track {
+  animation-play-state: paused;
+}
+@keyframes logo-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* -50% of the doubled list, minus half the trailing gap, = seamless */
+    transform: translateX(calc(-50% - 0.45rem));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-track {
+    animation: none;
+  }
+}
+
+/* Marquee for the skills / providers ribbon */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+}
+.marquee:hover {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee {
+    animation: none;
+  }
+}
